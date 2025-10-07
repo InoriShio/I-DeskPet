@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell
 import Quickshell.Wayland
+// import qs.Gifs
 
 PanelWindow {
     id: mainWindow
@@ -18,24 +19,24 @@ PanelWindow {
             width: 100;
             height: 100;
             clip: false;
-            source: "/home/inorishio/Pictures/Gifs/everknight-evernight.gif"
+            source: "./Gifs/evernight.gif"
         }
-        ListElement {
-            x: 200;
-            y: 250;
-            width: 100;
-            height: 100;
-            clip: false;
-            source: "/home/inorishio/Pictures/Gifs/Yukinon-Cat.gif"
-        }
-        ListElement {
-            x: 200;
-            y: 300;
-            width: 100;
-            height: 100;
-            clip: false;
-            source: "/home/inorishio/Pictures/Gifs/Yukinon-Cat.gif"
-        }
+        // ListElement {
+        //     x: 200;
+        //     y: 250;
+        //     width: 100;
+        //     height: 100;
+        //     clip: false;
+        //     source: "/home/inorishio/Pictures/Gifs/Yukinon-Cat.gif"
+        // }
+        // ListElement {
+        //     x: 200;
+        //     y: 300;
+        //     width: 100;
+        //     height: 100;
+        //     clip: false;
+        //     source: "/home/inorishio/Pictures/Gifs/Yukinon-Cat.gif"
+        // }
     }
 
     Repeater {
