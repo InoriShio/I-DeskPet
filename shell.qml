@@ -1,7 +1,7 @@
 import QtQuick
 import Quickshell
 import Quickshell.Wayland
-// import qs.Gifs
+//import qs.Gifs
 
 PanelWindow {
     id: mainWindow
@@ -16,11 +16,12 @@ PanelWindow {
         ListElement {
             x: 200;
             y: 200;
-            width: 100;
-            height: 100;
+            width: 320;
+            height: 293;
             clip: false;
             source: "./Gifs/evernight.gif"
         }
+
         // ListElement {
         //     x: 200;
         //     y: 250;
@@ -53,6 +54,7 @@ PanelWindow {
                 source: model.source
                 fillMode: Image.PreserveAspectFit
             }
+
             MouseArea {
                 anchors.fill: parent
                 drag.target: parent
