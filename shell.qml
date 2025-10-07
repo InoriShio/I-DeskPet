@@ -1,3 +1,4 @@
+pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell
 import Quickshell.Wayland
@@ -5,11 +6,19 @@ import Quickshell.Wayland
 
 PanelWindow {
     id: mainWindow
-    WlrLayershell.layer: WlrLayer.Bottom 
+    WlrLayershell.layer: WlrLayer.Top
     color: "transparent"
+    anchors {
+        bottom: true
+        left: true
+    }
     surfaceFormat.opaque: false
-    implicitWidth: screen.width 
-    implicitHeight: screen.height
+    implicitWidth: 320 
+    implicitHeight: 293
+    margins {
+        left: 0
+        bottom: 5
+    }
 
     property bool onTop: true
 
@@ -23,39 +32,23 @@ PanelWindow {
         }
     }
 
-    ListModel {
-        id: petModels
-        ListElement {
-            width: 320;
-            height: 293;
-            x: 0;
-            y: 1124;
-            source: "./Gifs/evernight.gif"
+    Rectangle {
+        anchors.fill: parent
+        color: "transparent"
+
+        id: petContainer
+        AnimatedImage {
+            anchors.fill: parent
+            source: "Gifs/evernight.gif"
+            fillMode: Image.PreserveAspectFit
         }
-    }
 
-    Repeater {
-        model: petModels
-        delegate: Item {
-            width: model.width
-            height: model.height
-            x: model.x
-            y: model.y
-
-            AnimatedImage {
-                anchors.fill: parent
-                source: model.source
-                fillMode: Image.PreserveAspectFit
-            }
-
-            MouseArea {
-                anchors.fill: parent
-                drag.target: parent
-                acceptedButtons: Qt.LeftButton | Qt.MiddleButton
-                onClicked: (mouse) => {
-                    if (mouse.button === Qt.MiddleButton) {
-                        mainWindow.toggleLayer()
-                    }
+        MouseArea {
+            anchors.fill: parent
+            acceptedButtons: Qt.MiddleButton
+            onClicked: (mouse) => {
+                if (mouse.button === Qt.MiddleButton) {
+                    mainWindow.toggleLayer()
                 }
             }
         }
