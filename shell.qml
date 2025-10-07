@@ -14,30 +14,12 @@ PanelWindow {
     ListModel {
         id: petModels
         ListElement {
-            x: 200;
-            y: 200;
             width: 320;
             height: 293;
-            clip: false;
+            x: 200;
+            y: 200;
             source: "./Gifs/evernight.gif"
         }
-
-        // ListElement {
-        //     x: 200;
-        //     y: 250;
-        //     width: 100;
-        //     height: 100;
-        //     clip: false;
-        //     source: "/home/inorishio/Pictures/Gifs/Yukinon-Cat.gif"
-        // }
-        // ListElement {
-        //     x: 200;
-        //     y: 300;
-        //     width: 100;
-        //     height: 100;
-        //     clip: false;
-        //     source: "/home/inorishio/Pictures/Gifs/Yukinon-Cat.gif"
-        // }
     }
 
     Repeater {
@@ -47,7 +29,6 @@ PanelWindow {
             height: model.height
             x: model.x
             y: model.y
-            clip: model.clip
 
             AnimatedImage {
                 anchors.fill: parent
