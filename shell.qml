@@ -19,13 +19,35 @@ PanelWindow {
     implicitHeight: 293
     margins {
         left: 0
-        bottom: 5
+        bottom: 9
     }
 
+    property bool onTop: true
+
     IpcHandler {
-        id: ipc
-        target: mainWindow
-        function getColor() { return mainWindow.color.toString() }
+        target: "command"
+
+        // Keybind swap layer
+        function toggleLayer(): void {
+            if (!onTop) {
+                mainWindow.WlrLayershell.layer = WlrLayer.Top
+                onTop = true
+            } else {
+                mainWindow.WlrLayershell.layer = WlrLayer.Bottom
+                onTop = false
+            }
+        }
+
+        // Keybind swap overlay
+        function toggleOverlay(): void {
+            if (!onTop) {
+                mainWindow.WlrLayershell.layer = WlrLayer.Overlay
+                onTop = true
+            } else {
+                mainWindow.WlrLayershell.layer = WlrLayer.Bottom
+                onTop = false
+            }
+        }
     }
 
     ToggleLayer {
