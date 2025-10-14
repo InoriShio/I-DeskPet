@@ -1,8 +1,10 @@
 pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell
+import Quickshell.Io
 import Quickshell.Wayland
-//import qs.Gifs
+import qs.Modules
+import qs.Functions
 
 PanelWindow {
     id: mainWindow
@@ -20,37 +22,17 @@ PanelWindow {
         bottom: 5
     }
 
-    property bool onTop: true
-
-    function toggleLayer() {
-        if (onTop) {
-            WlrLayershell.layer = WlrLayer.Bottom
-            onTop = false
-        } else {
-            WlrLayershell.layer = WlrLayer.Top
-            onTop = true
-        }
+    IpcHandler {
+        id: ipc
+        target: mainWindow
+        function getColor() { return mainWindow.color.toString() }
     }
 
-    Rectangle {
-        anchors.fill: parent
-        color: "transparent"
+    ToggleLayer {
+        id: toggleHelper
+    }
 
-        id: petContainer
-        AnimatedImage {
-            anchors.fill: parent
-            source: "Gifs/evernight.gif"
-            fillMode: Image.PreserveAspectFit
-        }
-
-        MouseArea {
-            anchors.fill: parent
-            acceptedButtons: Qt.MiddleButton
-            onClicked: (mouse) => {
-                if (mouse.button === Qt.MiddleButton) {
-                    mainWindow.toggleLayer()
-                }
-            }
-        }
+    PetMarch{
+        id:petMarch
     }
 }
