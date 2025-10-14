@@ -1,5 +1,10 @@
 <center>
+<div style="margin: 40px 0;">
 <img src=./Assets/evernight.gif />
-</center>
+</div>
 
 ### Pet March (Evernight)
+My selfmade desktop pet using QT.
+
+</center>
+
