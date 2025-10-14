@@ -1,3 +1,4 @@
 ### Pet March (Evernight)
-
-<img src=./Gifs/evernight.gif width="40" height="40" />
+<center>
+<img src=./Gifs/evernight.gif width="600" height="700" />
+</center>
