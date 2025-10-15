@@ -1,5 +1,5 @@
 <p align="center">
-### Pet March (Evernight)</div>
+### Pet March (Evernight)
 My selfmade desktop pet using QT.
 </p>
 
@@ -8,10 +8,10 @@ My selfmade desktop pet using QT.
 </div>
 
 ## Feature to-do list
-- [x] Hyprland keybind support
 - ToggleLayer: swap layer between bottom and top
 - ToggleOverlay: swap layer between bottom and overlay
-- [ ] Add multiple pets
 - Auto pet resize
-- [ ] Add moveability to pets with mouse inputs
-- [ ] Multimonitor support
+- [x] Hyprland keybind support
+- [x] Add multiple pets
+- [x] Add moveability to pets with mouse inputs
+- [x] Multimonitor support
