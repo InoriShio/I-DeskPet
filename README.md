@@ -1,10 +1,7 @@
 <div align="Center">
- <h3> Pet March (Evernight) </h3><br />
+ <h3> Pet March (Evernight) </h3>
  <p>My selfmade desktop pet using QT. </p>
-</div>
-
-<div align="center" style="margin: 0px 30px 0px 0px;">
-<img src=./Assets/evernight.gif />
+ <img src=./Assets/evernight.gif style="margin: 0px 30px 0px 0px;" />
 </div>
 
 ## Feature to-do list
