@@ -5,4 +5,4 @@
 </div>
 
 ## Feature to-do list
-- [] Hyprland keybind support
+-[] Hyprland keybind support
