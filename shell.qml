@@ -11,16 +11,17 @@ PanelWindow {
     WlrLayershell.layer: WlrLayer.Top
     color: "transparent"
     anchors {
-        bottom: true
         left: true
+        bottom: true
     }
-    surfaceFormat.opaque: false
-    implicitWidth: 320 
-    implicitHeight: 293
     margins {
         left: 0
         bottom: 9
     }
+
+    surfaceFormat.opaque: false
+    implicitWidth: 320 
+    implicitHeight: 293
 
     property bool onTop: true
 
@@ -29,23 +30,23 @@ PanelWindow {
 
         // Keybind swap layer
         function toggleLayer(): void {
-            if (!onTop) {
+            if ( !mainWindow.onTop ) {
                 mainWindow.WlrLayershell.layer = WlrLayer.Top
-                onTop = true
+                mainWindow.onTop = true
             } else {
                 mainWindow.WlrLayershell.layer = WlrLayer.Bottom
-                onTop = false
+                mainWindow.onTop = false
             }
         }
 
         // Keybind swap overlay
         function toggleOverlay(): void {
-            if (!onTop) {
+            if (!mainWindow.onTop) {
                 mainWindow.WlrLayershell.layer = WlrLayer.Overlay
-                onTop = true
+                mainWindow.onTop = true
             } else {
                 mainWindow.WlrLayershell.layer = WlrLayer.Bottom
-                onTop = false
+                mainWindow.onTop = false
             }
         }
     }
@@ -57,4 +58,6 @@ PanelWindow {
     PetMarch{
         id:petMarch
     }
+
+    Areapicker{}
 }
