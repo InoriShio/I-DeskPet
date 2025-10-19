@@ -6,9 +6,3 @@
 
 ## Feature to-do list
 - [] Hyprland keybind support
-    - [] ToggleLayer: swap layer between bottom and top
-    - [] ToggleOverlay: swap layer between bottom and overlay
-- Add multiple pets
-    - Auto pet resize
-- Add moveability to pets with mouse inputs
-- Multimonitor support
