@@ -58,6 +58,4 @@ PanelWindow {
     PetMarch{
         id:petMarch
     }
-
-    Areapicker{}
 }
