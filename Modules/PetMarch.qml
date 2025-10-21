@@ -1,8 +1,11 @@
+pragma ComponentBehavior: Bound
 import QtQuick
+import Quickshell.Io
+import Quickshell.Wayland
 
 Rectangle {
-    anchors.fill: parent
     color: "transparent"
+    anchors.fill: parent
 
     AnimatedImage {
         anchors.fill: parent
@@ -10,12 +13,32 @@ Rectangle {
         fillMode: Image.PreserveAspectFit
     }
 
-    MouseArea {
-        anchors.fill: parent
-        acceptedButtons: Qt.MiddleButton
-        onClicked: (mouse) => {
-            if (mouse.button === Qt.MiddleButton) {
-                toggleHelper.toggleLayer()
+    // margins {
+    //     mainWindow.left: 50
+    // }
+
+    IpcHandler {
+        target: "command"
+
+        // Keybind swap layer
+        function toggleLayer(): void {
+            if ( !mainWindow.onTop ) {
+                mainWindow.WlrLayershell.layer = WlrLayer.Top
+                mainWindow.onTop = true
+            } else {
+                mainWindow.WlrLayershell.layer = WlrLayer.Bottom
+                mainWindow.onTop = false
+            }
+        }
+
+        // Keybind swap overlay
+        function toggleOverlay(): void {
+            if (!mainWindow.onTop) {
+                mainWindow.WlrLayershell.layer = WlrLayer.Overlay
+                mainWindow.onTop = true
+            } else {
+                mainWindow.WlrLayershell.layer = WlrLayer.Bottom
+                mainWindow.onTop = false
             }
         }
     }
