@@ -1,14 +1,9 @@
-pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell.Io
 import Quickshell.Wayland
 
 Rectangle {
-    color: "transparent"
-    anchors.fill: parent
-
     AnimatedImage {
-        anchors.fill: parent
         source: "../Gifs/evernight.gif"
         fillMode: Image.PreserveAspectFit
     }

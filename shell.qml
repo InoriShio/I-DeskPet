@@ -24,11 +24,9 @@ PanelWindow {
     implicitWidth: 320 
     implicitHeight: 293
 
-    ToggleLayer {
-        id: toggleHelper
-    }
-
     PetMarch {
         id: petMarch
+        color: mainWindow.color
+        anchors.fill: parent
     }
 }
