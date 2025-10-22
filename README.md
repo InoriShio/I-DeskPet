@@ -5,4 +5,7 @@
 </div>
 
 ## Feature to-do list
--[] Hyprland keybind support
+- [x] Hyprland keybind support (Swap between top/bottom/overlay)
+- [x] Be able to click through your pet
+- [] Dynamic pets
+- [] Multiple pets
