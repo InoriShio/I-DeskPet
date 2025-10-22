@@ -20,6 +20,8 @@ PanelWindow {
         bottom: 9
     }
 
+    mask: Region {}
+
     surfaceFormat.opaque: false
     implicitWidth: 320 
     implicitHeight: 293
