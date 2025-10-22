@@ -3,14 +3,15 @@ import Quickshell.Io
 import Quickshell.Wayland
 
 Rectangle {
+    width: 320
+    height: 293
+
+    // anchors.bottom: parent.bottom
+
     AnimatedImage {
         source: "../Gifs/evernight.gif"
         fillMode: Image.PreserveAspectFit
     }
-
-    // margins {
-    //     mainWindow.left: 50
-    // }
 
     IpcHandler {
         target: "command"
