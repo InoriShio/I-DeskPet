@@ -24,11 +24,23 @@ PanelWindow {
     }
 
     mask: Region {
-        item: evernight,acheron
+        Region {
+            item: dragEvernight
+        }
+
+        Region {
+            item: dragAcheron
+        }
     }
 
     property var yesMask: Region {
+        Region {
             item: dragEvernight
+        }
+
+        Region {
+            item: dragAcheron
+        }
     }
 
     property var noMask: Region {
@@ -63,7 +75,8 @@ PanelWindow {
             color: mainWindow.color
         }
 
-        Mouse {}
+        Mouse {
+        }
     }
 
     Item {
@@ -77,6 +90,7 @@ PanelWindow {
             color: mainWindow.color
         }
 
-        Mouse {}
+        Mouse {
+        }
     }
 }

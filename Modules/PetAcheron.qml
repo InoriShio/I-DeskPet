@@ -1,6 +1,4 @@
 import QtQuick
-import Quickshell.Io
-import Quickshell.Wayland
 
 Rectangle {
     width: 227
