@@ -6,10 +6,8 @@ Rectangle {
     width: 320
     height: 293
 
-    // anchors.bottom: parent.bottom
-
     AnimatedImage {
-        source: "../Gifs/evernight.gif"
+        source: "../Gifs/Evernight.gif"
         fillMode: Image.PreserveAspectFit
     }
 

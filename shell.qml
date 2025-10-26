@@ -1,14 +1,15 @@
 pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell
+import Quickshell.Io
 import Quickshell.Wayland
 import qs.Modules
-// import qs.Functions
 
 PanelWindow {
     id: mainWindow
     color: "transparent"
     property bool onTop: true
+    property bool setMask: true
     WlrLayershell.layer: WlrLayer.Top
     anchors {
         left: true
@@ -23,30 +24,59 @@ PanelWindow {
     }
 
     mask: Region {
-        intersection: intersection.Intersect
+        item: evernight,acheron
+    }
+
+    property var yesMask: Region {
+            item: dragEvernight
+    }
+
+    property var noMask: Region {
+    }
+
+    IpcHandler {
+        target: "Mask"
+
+        function edmask(): void {
+            if ( !mainWindow.setMask ) {
+                mainWindow.mask = yesMask
+                mainWindow.setMask = true
+            } else {
+                mainWindow.mask = noMask
+                mainWindow.setMask = false
+            }
+        }
     }
 
     surfaceFormat.opaque: false
     implicitWidth: Screen.width
     implicitHeight: Screen.height
 
-    PetMarch {
-        id: petMarch2
-        color: mainWindow.color
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-    }
-
-    // Mve this pet
-    PetMarch {
-        id: original
-        color: mainWindow.color
+    Item {
+        id: dragEvernight
         x: 0
         y: 1147
-        // anchors.leftMargin: parent.leftMargin
-        // anchors.bottomMargin: parent.bottomMargin
+        width: evernight.width
+        height: evernight.height
+        PetMarch {
+            id: evernight
+            color: mainWindow.color
+        }
+
+        Mouse {}
     }
 
-    Mouse {
+    Item {
+        id: dragAcheron
+        x: 2300
+        y: 1230
+        width: acheron.width
+        height: acheron.height
+        PetAcheron {
+            id: acheron
+            color: mainWindow.color
+        }
+
+        Mouse {}
     }
 }
