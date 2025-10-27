@@ -11,15 +11,16 @@ PanelWindow {
     property bool onTop: true
     property bool setMask: true
     WlrLayershell.layer: WlrLayer.Top
+    WlrLayershell.exclusiveZone: 0
     anchors {
         left: true
+        right: true
         bottom: true
     }
 
     margins {
-        left: 0
-        right: 0
-        top: 0
+        left: 9
+        right: 9
         bottom: 9
     }
 
@@ -67,7 +68,7 @@ PanelWindow {
     Item {
         id: dragEvernight
         x: 0
-        y: 1147
+        y: Screen.height - evernight.height
         width: evernight.width
         height: evernight.height
         PetMarch {
@@ -81,8 +82,8 @@ PanelWindow {
 
     Item {
         id: dragAcheron
-        x: 2300
-        y: 1230
+        x: Screen.width - acheron.width
+        y: Screen.height - acheron.height
         width: acheron.width
         height: acheron.height
         PetAcheron {

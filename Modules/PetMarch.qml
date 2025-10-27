@@ -3,10 +3,11 @@ import Quickshell.Io
 import Quickshell.Wayland
 
 Rectangle {
-    width: 320
-    height: 293
+    width: imageEvernight.width
+    height: imageEvernight.height
 
     AnimatedImage {
+        id: imageEvernight
         source: "../Gifs/Evernight.gif"
         fillMode: Image.PreserveAspectFit
     }
