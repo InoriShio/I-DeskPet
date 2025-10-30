@@ -8,9 +8,19 @@ import qs.Modules
 PanelWindow {
     id: mainWindow
     color: "transparent"
+    WlrLayershell.layer: WlrLayer.Top
+    surfaceFormat.opaque: false
+    implicitWidth: Screen.width
+    implicitHeight: Screen.height
+
     property bool onTop: true
     property bool setMask: true
-    WlrLayershell.layer: WlrLayer.Top
+
+    GetGifs {
+        id: getGifs
+        running: true
+    }
+    
     anchors {
         left: true
         bottom: true
@@ -23,74 +33,15 @@ PanelWindow {
         bottom: 9
     }
 
-    mask: Region {
-        Region {
-            item: dragEvernight
-        }
+    Rectangle {
+        color: mainWindow.color
+        anchors.centerIn: parent
+        implicitWidth: Screen.width
+        implicitHeight: Screen.height
 
-        Region {
-            item: dragAcheron
-        }
-    }
-
-    property var yesMask: Region {
-        Region {
-            item: dragEvernight
-        }
-
-        Region {
-            item: dragAcheron
-        }
-    }
-
-    property var noMask: Region {
-    }
-
-    IpcHandler {
-        target: "Mask"
-
-        function edmask(): void {
-            if ( !mainWindow.setMask ) {
-                mainWindow.mask = yesMask
-                mainWindow.setMask = true
-            } else {
-                mainWindow.mask = noMask
-                mainWindow.setMask = false
-            }
-        }
-    }
-
-    surfaceFormat.opaque: false
-    implicitWidth: Screen.width
-    implicitHeight: Screen.height
-
-    Item {
-        id: dragEvernight
-        x: 0
-        y: 1147
-        width: evernight.width
-        height: evernight.height
-        PetMarch {
-            id: evernight
-            color: mainWindow.color
-        }
-
-        Mouse {
-        }
-    }
-
-    Item {
-        id: dragAcheron
-        x: 2300
-        y: 1230
-        width: acheron.width
-        height: acheron.height
-        PetAcheron {
-            id: acheron
-            color: mainWindow.color
-        }
-
-        Mouse {
+        GifsLoader {
+            id: gifloader
+            gifsList: getGifs.gifsList
         }
     }
 }

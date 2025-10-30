@@ -1,11 +1,10 @@
 import QtQuick
 
 Rectangle {
-    width: 227
-    height: 212
+    width: AnimatedImage.width
+    height: AnimatedImage.height
 
     AnimatedImage {
-        source: "../Gifs/Acheron.gif"
         fillMode: Image.PreserveAspectFit
     }
 }
