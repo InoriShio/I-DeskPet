@@ -1,7 +1,6 @@
 pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell
-import Quickshell.Io
 import Quickshell.Wayland
 import qs.Modules
 
@@ -14,13 +13,7 @@ PanelWindow {
     implicitHeight: Screen.height
 
     property bool onTop: true
-    property bool setMask: true
 
-    GetGifs {
-        id: getGifs
-        running: true
-    }
-    
     anchors {
         left: true
         bottom: true
@@ -33,15 +26,30 @@ PanelWindow {
         bottom: 9
     }
 
-    Rectangle {
-        color: mainWindow.color
-        anchors.centerIn: parent
-        implicitWidth: Screen.width
-        implicitHeight: Screen.height
+    GetGifs {
+        id: getGifs
+        running: true
+    }
 
-        GifsLoader {
-            id: gifloader
-            gifsList: getGifs.gifsList
+    GifsLoader {
+        id: gifloader
+        gifsList: getGifs.gifsList
+        onItemAdded: {
+            mainWindow.petRegion( item )
         }
+    }
+
+    function petRegion( itemObject ) {
+        let newregion = regionComponent.createObject( pets, { "item": itemObject })
+        pets.regions.push( newregion )
+    }
+
+    Component {
+        id: regionComponent
+        Region { }
+    }
+
+    mask: Region {
+        id: pets
     }
 }
