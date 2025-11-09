@@ -1,6 +1,7 @@
 pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell
+import Quickshell.Io
 import Quickshell.Wayland
 import qs.Modules
 
@@ -30,12 +31,38 @@ PanelWindow {
         id: getGifs
         running: true
     }
-
+    
     GifsLoader {
         id: gifloader
         gifsList: getGifs.gifsList
         onItemAdded: {
             mainWindow.petRegion( item )
+        }
+    }
+
+    IpcHandler {
+        target: "command"
+
+        // Keybind swap layer
+        function toggleLayer(): void {
+            if ( !mainWindow.onTop ) {
+                mainWindow.WlrLayershell.layer = WlrLayer.Top
+                mainWindow.onTop = true
+            } else {
+                mainWindow.WlrLayershell.layer = WlrLayer.Bottom
+                mainWindow.onTop = false
+            }
+        }
+
+        // Keybind swap overlay
+        function toggleOverlay(): void {
+            if (!mainWindow.onTop) {
+                mainWindow.WlrLayershell.layer = WlrLayer.Overlay
+                mainWindow.onTop = true
+            } else {
+                mainWindow.WlrLayershell.layer = WlrLayer.Bottom
+                mainWindow.onTop = false
+            }
         }
     }
 
@@ -49,7 +76,25 @@ PanelWindow {
         Region { }
     }
 
-    mask: Region {
-        id: pets
+    mask: Region {}
+
+    property var petMove: Region { id: pets }
+
+    property var noMove: Region {}
+
+    property bool setMask: false
+    
+    IpcHandler {
+        target: "Mask"
+
+        function edmask(): void {
+            if ( !mainWindow.setMask ) {
+                mainWindow.mask = petMove
+                mainWindow.setMask = true
+            } else {
+                mainWindow.mask = noMove
+                mainWindow.setMask = false
+            }
+        }
     }
 }
