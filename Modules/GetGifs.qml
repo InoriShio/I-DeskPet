@@ -19,7 +19,6 @@ Process {
     }
 
     function reload() {
-        // Clear current list and restart the process
         gifsList = []
         running = false
         running = true

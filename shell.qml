@@ -1,4 +1,5 @@
 pragma ComponentBehavior: Bound
+
 import QtQuick
 import Quickshell
 import Quickshell.Io
@@ -10,14 +11,15 @@ PanelWindow {
     color: "transparent"
     WlrLayershell.layer: WlrLayer.Top
     surfaceFormat.opaque: false
-    implicitWidth: Screen.width
-    implicitHeight: Screen.height
 
     property bool onTop: true
+	property list<Item> repeaterItems: []
 
     anchors {
         left: true
         bottom: true
+		right: true
+		top: true
     }
 
     margins {
@@ -27,32 +29,43 @@ PanelWindow {
         bottom: 9
     }
 
-    ConfigLoader {
-        id: configLoader
-        onFolderChanged: {
-            console.log("Folder changed to:", gifFolder)
-            getGifs.reload()
-        }
-    }
-
     GetGifs {
         id: getGifs
-        gifFolder: configLoader.gifFolder
-        running: configLoader.loaded
+        gifFolder: ConfigLoader.gifFolder
+        running: ConfigLoader.ready
     }
 
     GifsLoader {
-        id: gifloader
+        id: gifLoader
         gifsList: getGifs.gifsList
-        onItemAdded: {
-            mainWindow.petRegion( item )
-        }
+		onItemAdded: function( index, item ) {
+			mainWindow.repeaterItems.push( item )
+		}
     }
+
+	Variants {
+		id: maskVariants
+
+		model: [ ...mainWindow.repeaterItems ]
+
+		Region {
+			required property Item modelData
+
+			Component.onCompleted: {
+				console.log(modelData)
+			}
+
+			x: modelData.x
+			y: modelData.y
+			width: modelData.width
+			height: modelData.height
+			intersection: Intersection.Subtract
+		}
+	}
 
     IpcHandler {
         target: "command"
 
-        // Keybind swap layer
         function toggleLayer(): void {
             if ( !mainWindow.onTop ) {
                 mainWindow.WlrLayershell.layer = WlrLayer.Top
@@ -63,7 +76,6 @@ PanelWindow {
             }
         }
 
-        // Keybind swap overlay
         function toggleOverlay(): void {
             if (!mainWindow.onTop) {
                 mainWindow.WlrLayershell.layer = WlrLayer.Overlay
@@ -85,7 +97,12 @@ PanelWindow {
         Region { }
     }
 
-    mask: Region {}
+	mask: Region {
+		width: Screen.width
+		height: Screen.height
+		intersection: Intersection.Xor
+		regions: maskVariants.instances
+	}
 
     property var petMove: Region { id: pets }
 
@@ -98,10 +115,10 @@ PanelWindow {
 
         function edmask(): void {
             if ( !mainWindow.setMask ) {
-                mainWindow.mask = petMove
+                mainWindow.mask = mainWindow.petMove
                 mainWindow.setMask = true
             } else {
-                mainWindow.mask = noMove
+                mainWindow.mask = mainWindow.noMove
                 mainWindow.setMask = false
             }
         }
