@@ -1,3 +1,5 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import qs.Modules
 
@@ -8,14 +10,28 @@ Repeater {
     property int lastWidth
     model: gifsList
     Item {
-        x: index === 0 ? 0 : gifRepeater.itemAt(index - 1).x + gifRepeater.itemAt(index - 1).width
+		id: gifItem
+
+		required property int index
+		required property string modelData
+
+		function xPos(): void {
+			let xPos = 0;
+			const item = gifRepeater.itemAt(index - 1);
+			if ( item ) xPos += item.x + item.width;
+			return xPos;
+		}
+
+		Component.onCompleted: x = xPos()
+
+		x: 0
         y: Screen.height - height
         width: gif.width
         height: gif.height
 
         AnimatedImage {
             id: gif
-            source: modelData
+            source: gifItem.modelData
             fillMode: Image.PreserveAspectFit
         }
 
