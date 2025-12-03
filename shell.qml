@@ -27,11 +27,20 @@ PanelWindow {
         bottom: 9
     }
 
+    ConfigLoader {
+        id: configLoader
+        onFolderChanged: {
+            console.log("Folder changed to:", gifFolder)
+            getGifs.reload()
+        }
+    }
+
     GetGifs {
         id: getGifs
-        running: true
+        gifFolder: configLoader.gifFolder
+        running: configLoader.loaded
     }
-    
+
     GifsLoader {
         id: gifloader
         gifsList: getGifs.gifsList

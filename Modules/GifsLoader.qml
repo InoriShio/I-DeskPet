@@ -8,10 +8,11 @@ Repeater {
     property int lastWidth
     model: gifsList
     Item {
-        x: gifRepeater.itemAt(index - 1).x + gifRepeater.itemAt(index - 1).width
+        x: index === 0 ? 0 : gifRepeater.itemAt(index - 1).x + gifRepeater.itemAt(index - 1).width
         y: Screen.height - height
         width: gif.width
         height: gif.height
+
         AnimatedImage {
             id: gif
             source: modelData
