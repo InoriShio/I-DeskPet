@@ -4,12 +4,14 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
+import Quickshell.Hyprland
 import qs.Modules
 
 PanelWindow {
     id: mainWindow
     color: "transparent"
-    WlrLayershell.layer: WlrLayer.Top
+    WlrLayershell.layer: WlrLayer.Overlay
+    WlrLayershell.exclusionMode: ExclusionMode.Ignore
     surfaceFormat.opaque: false
 
     property bool onTop: true
@@ -32,7 +34,7 @@ PanelWindow {
     GetGifs {
         id: getGifs
         gifFolder: ConfigLoader.gifFolder
-        running: ConfigLoader.ready
+        running: true
     }
 
     GifsLoader {
@@ -63,30 +65,6 @@ PanelWindow {
 		}
 	}
 
-    IpcHandler {
-        target: "command"
-
-        function toggleLayer(): void {
-            if ( !mainWindow.onTop ) {
-                mainWindow.WlrLayershell.layer = WlrLayer.Top
-                mainWindow.onTop = true
-            } else {
-                mainWindow.WlrLayershell.layer = WlrLayer.Bottom
-                mainWindow.onTop = false
-            }
-        }
-
-        function toggleOverlay(): void {
-            if (!mainWindow.onTop) {
-                mainWindow.WlrLayershell.layer = WlrLayer.Overlay
-                mainWindow.onTop = true
-            } else {
-                mainWindow.WlrLayershell.layer = WlrLayer.Bottom
-                mainWindow.onTop = false
-            }
-        }
-    }
-
     function petRegion( itemObject ) {
         let newregion = regionComponent.createObject( pets, { "item": itemObject })
         pets.regions.push( newregion )
@@ -104,16 +82,35 @@ PanelWindow {
 		regions: maskVariants.instances
 	}
 
-    property var petMove: Region { id: pets }
+    property var petMove: Region { id: pets
+		width: Screen.width
+		height: Screen.height
+		intersection: Intersection.Xor
+		regions: maskVariants.instances
+    }
 
     property var noMove: Region {}
 
     property bool setMask: false
     
-    IpcHandler {
-        target: "Mask"
+    GlobalShortcut {
+        appid: "I-DeskPet"
+        name: "toggle-Layer"
+        onPressed: {
+            if (!mainWindow.onTop) {
+                mainWindow.WlrLayershell.layer = WlrLayer.Overlay
+                mainWindow.onTop = true
+            } else {
+                mainWindow.WlrLayershell.layer = WlrLayer.Bottom
+                mainWindow.onTop = false
+            }
+        }
+    }
 
-        function edmask(): void {
+    GlobalShortcut {
+        appid: "I-DeskPet"
+        name: "toggle-Region"
+        onPressed: {
             if ( !mainWindow.setMask ) {
                 mainWindow.mask = mainWindow.petMove
                 mainWindow.setMask = true

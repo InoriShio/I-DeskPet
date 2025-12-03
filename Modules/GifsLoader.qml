@@ -26,13 +26,14 @@ Repeater {
 
 		x: 0
         y: Screen.height - height
-        width: gif.width
-        height: gif.height
+        width: Math.floor( gif.sourceSize.width / 2 )
+        height: Math.floor( gif.sourceSize.height / 2 )
 
         AnimatedImage {
             id: gif
             source: gifItem.modelData
-            fillMode: Image.PreserveAspectFit
+            // fillMode: Image.PreserveAspectFit
+            anchors.fill: parent
         }
 
         Mouse {}
