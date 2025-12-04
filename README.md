@@ -5,7 +5,10 @@
 </div>
 
 ## Feature to-do list
-- [x] Hyprland keybind support (Swap between top/bottom/overlay)
-- [x] Be able to click through your pet
-- [] Dynamic pets
-- [] Multiple pets
+- [x] Hyprland keybind support
+    - [x] Swap Overlay <> Bottom
+    - [x] Swap Mouse area targetted -/+
+- [x] Dynamic pets
+- [x] Multiple pets
+- [x] Config location ~/.config/I-DeskPet/config.json
+          {"gifFolder": "PATH"}
