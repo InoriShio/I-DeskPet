@@ -26,9 +26,9 @@ PanelWindow {
 
     margins {
         left: 0
+        bottom: 9
         right: 0
         top: 0
-        bottom: 9
     }
 
     GetGifs {
@@ -91,7 +91,7 @@ PanelWindow {
 
     property var noMove: Region {}
 
-    property bool setMask: false
+    property bool setMask: true
     
     GlobalShortcut {
         appid: "I-DeskPet"

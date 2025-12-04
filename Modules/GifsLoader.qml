@@ -25,9 +25,9 @@ Repeater {
 		Component.onCompleted: x = xPos()
 
 		x: 0
-        y: Screen.height - height
-        width: Math.floor( gif.sourceSize.width / 2 )
-        height: Math.floor( gif.sourceSize.height / 2 )
+        y: Screen.height - ( height + 10 )
+        width: Math.floor( gif.sourceSize.width / 1.25 )
+        height: Math.floor( gif.sourceSize.height / 1.25 )
 
         AnimatedImage {
             id: gif
