@@ -17,3 +17,4 @@
 ## To-Do list
 - [] Setting more json settings
 - [] Clear up code
+- [] Auto update gifs modeldata
