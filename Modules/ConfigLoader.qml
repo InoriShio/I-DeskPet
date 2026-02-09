@@ -9,6 +9,9 @@ Singleton {
 	id: root
 
 	property alias gifFolder: adapter.gifFolder
+	property alias scaling: adapter.scaling
+	property alias maxWidth: adapter.maxWidth
+	property alias maxHeight: adapter.maxHeight
 	property string configDir: Quickshell.env("HOME") + "/.config/I-DeskPet"
 	property string configPath: configDir + "/config.json"
 
@@ -48,6 +51,9 @@ Singleton {
 			id: adapter
 
             property string gifFolder: Quickshell.shellDir + "/Gifs"
+			property var scaling: 1
+			property int maxWidth: 200
+			property int maxHeight: 200
 		}
 	}
 }

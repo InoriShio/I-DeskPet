@@ -9,10 +9,11 @@ import qs.Modules
 
 PanelWindow {
     id: mainWindow
-    color: "transparent"
+	WlrLayershell.namespace: "IDeskPet-Pet"
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.exclusionMode: ExclusionMode.Ignore
     surfaceFormat.opaque: false
+	color: "transparent"
 
     property bool onTop: true
 	property list<Item> repeaterItems: []

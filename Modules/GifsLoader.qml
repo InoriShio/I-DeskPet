@@ -1,13 +1,13 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
+import Quickshell.Io
 import qs.Modules
 
 Repeater {
     id: gifRepeater
     required property list<string> gifsList
-    property int firstWidth
-    property int lastWidth
+
     model: gifsList
     Item {
 		id: gifItem
@@ -26,8 +26,8 @@ Repeater {
 
 		x: 0
         y: Screen.height - height
-        width: Math.floor( gif.sourceSize.width / 1.25 )
-        height: Math.floor( gif.sourceSize.height / 1.25 )
+        width: Math.min( Math.floor( gif.sourceSize.width / ConfigLoader.scaling ), Math.floor( ConfigLoader.maxWidth / ConfigLoader.scaling ))
+        height: Math.min( Math.floor( gif.sourceSize.height / ConfigLoader.scaling ), Math.floor( ConfigLoader.maxHeight / ConfigLoader.scaling ))
 
         AnimatedImage {
             id: gif
