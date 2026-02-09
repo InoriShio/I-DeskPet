@@ -15,7 +15,7 @@ Repeater {
 		required property int index
 		required property string modelData
 
-		function xPos(): void {
+		function xPos(): int {
 			let xPos = 0;
 			const item = gifRepeater.itemAt(index - 1);
 			if ( item ) xPos += item.x + item.width;
@@ -32,8 +32,12 @@ Repeater {
         AnimatedImage {
             id: gif
             source: gifItem.modelData
-            // fillMode: Image.PreserveAspectFit
+            fillMode: Image.PreserveAspectFit
             anchors.fill: parent
+			Component.onCompleted: {
+				var s = gifItem.modelData.split("/")
+				console.log(s[s.length - 1].split(".")[0])
+			}
         }
 
         Mouse {}

@@ -52,8 +52,8 @@ Singleton {
 
             property string gifFolder: Quickshell.shellDir + "/Gifs"
 			property var scaling: 1
-			property int maxWidth: 200
-			property int maxHeight: 200
+			property int maxWidth: 1000
+			property int maxHeight: 1000
 		}
 	}
 }
