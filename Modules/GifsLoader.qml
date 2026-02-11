@@ -26,18 +26,14 @@ Repeater {
 
 		x: 0
         y: Screen.height - height
-        width: Math.min( Math.floor( gif.sourceSize.width / ConfigLoader.scaling ), Math.floor( ConfigLoader.maxWidth / ConfigLoader.scaling ))
-        height: Math.min( Math.floor( gif.sourceSize.height / ConfigLoader.scaling ), Math.floor( ConfigLoader.maxHeight / ConfigLoader.scaling ))
+        width: ( Math.floor( gif.sourceSize.width / ConfigLoader.scaling ) ? gif.sourceSize.width )
+		height: ( Math.floor( gif.sourceSize.height / ConfigLoader.scaling ) ? gif.sourceSize.height )
 
         AnimatedImage {
             id: gif
             source: gifItem.modelData
             fillMode: Image.PreserveAspectFit
             anchors.fill: parent
-			Component.onCompleted: {
-				var s = gifItem.modelData.split("/")
-				console.log(s[s.length - 1].split(".")[0])
-			}
         }
 
         Mouse {}
