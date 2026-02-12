@@ -1,6 +1,7 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
+import Quickshell
 import Quickshell.Io
 import qs.Modules
 
@@ -15,19 +16,17 @@ Repeater {
 		required property int index
 		required property string modelData
 
-		function xPos(): int {
-			let xPos = 0;
-			const item = gifRepeater.itemAt(index - 1);
-			if ( item ) xPos += item.x + item.width;
-			return xPos;
-		}
+		// function xPos(): int {
+		// 	let xPos = 0;
+		// 	const item = gifRepeater.itemAt(index - 1);
+		// 	if ( item ) xPos += item.x + item.width;
+		// 	return xPos;
+		// }
 
-		Component.onCompleted: x = xPos()
+		// Component.onCompleted: x = xPos()
 
-		x: 0
-        y: Screen.height - height
-        width: ( Math.floor( gif.sourceSize.width / ConfigLoader.scaling ) ? gif.sourceSize.width )
-		height: ( Math.floor( gif.sourceSize.height / ConfigLoader.scaling ) ? gif.sourceSize.height )
+        width: Math.floor( gif.sourceSize.width / gifSaved.scaling )
+		height: Math.floor( gif.sourceSize.height / gifSaved.scaling )
 
         AnimatedImage {
             id: gif
@@ -36,6 +35,49 @@ Repeater {
             anchors.fill: parent
         }
 
-        Mouse {}
+		Mouse {
+			onWheel: (wheel)=> {
+				gifSaved.scaling = Math.max( 1, ( gifSaved.scaling + 0.1 * ( wheel.angleDelta.y / 120 ) ) )
+			}
+			
+			onClicked: gifSaved.scaling = 1
+			
+			onReleased: {
+				console.log(gifItem.x)
+				gifSaved.positionX = gifItem.x
+				gifSaved.positionY = gifItem.y
+			}
+		}
+
+		FileView {
+			id: watcher
+			path: configPath
+
+			property list<string> gifNames: gifItem.modelData.split("/")
+			property string name: gifNames[gifNames.length - 1].split(".")[0] + ".json"
+			property string configDir: Quickshell.env("HOME") + "/.config/I-DeskPet/"
+			property string configPath: configDir + name
+			property alias positionX: gifSaved.positionX
+			property alias positionY: gifSaved.positionY
+
+			onLoaded: {
+				gifItem.x = gifSaved.positionX
+				gifItem.y = gifSaved.positionY
+			}
+
+			watchChanges: true
+
+			onFileChanged: reload()
+
+			onAdapterUpdated: writeAdapter()
+
+			JsonAdapter {
+				id: gifSaved
+
+				property var scaling: 1
+				property var positionX: 0
+				property var positionY: ( Screen.height - gifItem.height )
+			}
+		}
     }
 }
