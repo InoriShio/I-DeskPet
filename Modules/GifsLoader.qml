@@ -25,6 +25,8 @@ Repeater {
 
 		// Component.onCompleted: x = xPos()
 
+		onXChanged: gifSaved.positionX = gifItem.x
+		onYChanged: gifSaved.positionY = gifItem.y
         width: Math.floor( gif.sourceSize.width / gifSaved.scaling )
 		height: Math.floor( gif.sourceSize.height / gifSaved.scaling )
 
@@ -41,12 +43,6 @@ Repeater {
 			}
 			
 			onClicked: gifSaved.scaling = 1
-			
-			onReleased: {
-				console.log(gifItem.x)
-				gifSaved.positionX = gifItem.x
-				gifSaved.positionY = gifItem.y
-			}
 		}
 
 		FileView {
@@ -57,8 +53,7 @@ Repeater {
 			property string name: gifNames[gifNames.length - 1].split(".")[0] + ".json"
 			property string configDir: Quickshell.env("HOME") + "/.config/I-DeskPet/"
 			property string configPath: configDir + name
-			property alias positionX: gifSaved.positionX
-			property alias positionY: gifSaved.positionY
+			// property int yGif: ( screen.height - gifItem.height )
 
 			onLoaded: {
 				gifItem.x = gifSaved.positionX
@@ -74,9 +69,9 @@ Repeater {
 			JsonAdapter {
 				id: gifSaved
 
-				property var scaling: 1
-				property var positionX: 0
-				property var positionY: ( Screen.height - gifItem.height )
+				property real scaling: 1
+				property int positionX: 0
+				property int positionY: 0
 			}
 		}
     }
