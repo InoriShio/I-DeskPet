@@ -1,20 +1,19 @@
-import Quickshell.Io
+import QtQuick
+import Qt.labs.folderlistmodel
 
-Process {
-	id: getGifsProcess
+Item {
+	id: root
 	required property string gifFolder
-	property list<string> gifsList: []
 
-	command: ["find", gifFolder, "-type", "f", "-name", "*.gif"]
+	property alias gifsModel: folderModel
+	property alias count: folderModel.count
 
-	stdout: StdioCollector {
-		onStreamFinished: {
-			var gifs = this.text.trim().split("\n")
-			if (gifs.length > 0 && gifs[0] !== "") {
-				getGifsProcess.gifsList = gifs
-			} else {
-				getGifsProcess.gifsList = []
-			}
-		}
+	FolderListModel {
+		id: folderModel
+		folder: "file://" + root.gifFolder
+		nameFilters: [ "*.gif" ]
+		showDirs: false
+		showHidden: false
+		sortField: FolderListModel.Name
 	}
 }

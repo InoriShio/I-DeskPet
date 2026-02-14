@@ -11,8 +11,6 @@ Singleton {
 	property string configDir: Quickshell.env("HOME") + "/.config/I-DeskPet"
 	property string configPath: configDir + "/config.json"
 
-	signal folderChanged()
-
 	Process {
 		id: dirCheck
 		running: true
@@ -22,10 +20,6 @@ Singleton {
 			if ( exitCode !== 0 ) {
 				console.log( "creating dir" )
 				dirCreate.running = true
-			}
-			if ( exitCode !== 1 ) {
-				console.log( "creating config" )
-				configCheck.running = true
 			}
         }
     }

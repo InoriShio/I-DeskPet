@@ -35,14 +35,16 @@ PanelWindow {
     GetGifs {
         id: getGifs
         gifFolder: ConfigLoader.gifFolder
-        running: true
     }
 
     GifsLoader {
         id: gifLoader
-        gifsList: getGifs.gifsList
+        gifsModel: getGifs.gifsModel
 		onItemAdded: function( index, item ) {
-			mainWindow.repeaterItems.push( item )
+			mainWindow.repeaterItems = Array.from( { length: gifLoader.count }, (_, i) => gifLoader.itemAt(i) ).filter( v => v !== null )
+		}
+		onItemRemoved: function( index, item ) {
+			mainWindow.repeaterItems = Array.from( { length: gifLoader.count }, (_, i) => gifLoader.itemAt(i) ).filter( v => v !== null )
 		}
     }
 

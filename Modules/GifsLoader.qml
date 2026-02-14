@@ -3,28 +3,30 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import Qt.labs.folderlistmodel
 import qs.Modules
 
 Repeater {
     id: gifRepeater
-    required property list<string> gifsList
+    required property FolderListModel gifsModel
 
-    model: gifsList
+    model: gifsModel
     Item {
 		id: gifItem
 
-		required property int index
-		required property string modelData
-		property int high: ( screen.height - gifItem.height )
+		required property url fileUrl
+		required property string fileBaseName
+		property bool loaded: false
 
-		onXChanged: gifSaved.positionX = gifItem.x
-		onYChanged: gifSaved.positionY = gifItem.y
+		visible: gifItem.loaded
+		onXChanged: if ( gifItem.loaded ) gifSaved.positionX = gifItem.x
+		onYChanged: if ( gifItem.loaded ) gifSaved.positionY = gifItem.y
         width: Math.floor( gif.sourceSize.width / gifSaved.scaling )
 		height: Math.floor( gif.sourceSize.height / gifSaved.scaling )
 
         AnimatedImage {
             id: gif
-            source: gifItem.modelData
+            source: gifItem.fileUrl
             fillMode: Image.PreserveAspectFit
             anchors.fill: parent
         }
@@ -34,21 +36,26 @@ Repeater {
 				gifSaved.scaling = Math.max( 1, ( gifSaved.scaling + 0.1 * ( wheel.angleDelta.y / 120 ) ) )
 			}
 			
-			onClicked: gifSaved.scaling = 1
+			onDoubleClicked: gifSaved.scaling = 1
 		}
 
 		FileView {
 			id: watcher
 			path: configPath
 
-			property list<string> gifNames: gifItem.modelData.split("/")
-			property string name: gifNames[gifNames.length - 1].split(".")[0] + ".json"
+			property string name: gifItem.fileBaseName + ".json"
 			property string configDir: Quickshell.env("HOME") + "/.config/I-DeskPet/"
 			property string configPath: configDir + name
 
 			onLoaded: {
 				gifItem.x = gifSaved.positionX
 				gifItem.y = gifSaved.positionY
+				gifItem.loaded = true
+			}
+
+			onLoadFailed: {
+				writeAdapter()
+				gifItem.loaded = true
 			}
 
 			watchChanges: true
