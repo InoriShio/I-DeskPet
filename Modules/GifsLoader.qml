@@ -15,15 +15,7 @@ Repeater {
 
 		required property int index
 		required property string modelData
-
-		// function xPos(): int {
-		// 	let xPos = 0;
-		// 	const item = gifRepeater.itemAt(index - 1);
-		// 	if ( item ) xPos += item.x + item.width;
-		// 	return xPos;
-		// }
-
-		// Component.onCompleted: x = xPos()
+		property int high: ( screen.height - gifItem.height )
 
 		onXChanged: gifSaved.positionX = gifItem.x
 		onYChanged: gifSaved.positionY = gifItem.y
@@ -53,7 +45,6 @@ Repeater {
 			property string name: gifNames[gifNames.length - 1].split(".")[0] + ".json"
 			property string configDir: Quickshell.env("HOME") + "/.config/I-DeskPet/"
 			property string configPath: configDir + name
-			// property int yGif: ( screen.height - gifItem.height )
 
 			onLoaded: {
 				gifItem.x = gifSaved.positionX

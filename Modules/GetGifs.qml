@@ -17,16 +17,4 @@ Process {
 			}
 		}
 	}
-
-	function reload() {
-		gifsList = []
-		running = false
-		running = true
-	}
-
-	onGifFolderChanged: {
-        if (running) {
-            getGifsProcess.reload()
-        }
-    }
 }
