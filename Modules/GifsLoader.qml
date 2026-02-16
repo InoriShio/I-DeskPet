@@ -16,8 +16,12 @@ Repeater {
 
 		required property url fileUrl
 		required property string fileBaseName
+		required property int index
 		property bool loaded: false
+		property alias hovered: mouse.containsMouse
+		property alias zIndex: gifSaved.zIndex
 
+		z: gifSaved.zIndex
 		visible: gifItem.loaded
 		onXChanged: if ( gifItem.loaded ) gifSaved.positionX = gifItem.x
 		onYChanged: if ( gifItem.loaded ) gifSaved.positionY = gifItem.y
@@ -32,6 +36,7 @@ Repeater {
         }
 
 		Mouse {
+			id: mouse
 			onWheel: (wheel)=> {
 				gifSaved.scaling = Math.max( 1, ( gifSaved.scaling + 0.1 * ( wheel.angleDelta.y / 120 ) ) )
 			}
@@ -48,12 +53,14 @@ Repeater {
 			property string configPath: configDir + name
 
 			onLoaded: {
+				if ( gifSaved.zIndex === -1 ) gifSaved.zIndex = gifItem.index
 				gifItem.x = gifSaved.positionX
 				gifItem.y = gifSaved.positionY
 				gifItem.loaded = true
 			}
 
 			onLoadFailed: {
+				gifSaved.zIndex = gifItem.index
 				writeAdapter()
 				gifItem.loaded = true
 			}
@@ -70,6 +77,7 @@ Repeater {
 				property real scaling: 1
 				property int positionX: 0
 				property int positionY: 0
+				property int zIndex: -1
 			}
 		}
     }

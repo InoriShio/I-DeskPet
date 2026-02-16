@@ -3,6 +3,7 @@ import QtQuick
 MouseArea {
     anchors.fill: parent
     acceptedButtons: Qt.LeftButton
+    hoverEnabled: true
     drag.target: parent
     drag.axis: Drag.XAndYAxis
     drag.minimumX: 0

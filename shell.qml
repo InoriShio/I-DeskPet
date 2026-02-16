@@ -9,7 +9,7 @@ import qs.Modules
 
 PanelWindow {
     id: mainWindow
-	WlrLayershell.namespace: "IDeskPet-Pet"
+	WlrLayershell.namespace: "I-DeskPet"
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.exclusionMode: ExclusionMode.Ignore
     surfaceFormat.opaque: false
@@ -120,6 +120,47 @@ PanelWindow {
             } else {
                 mainWindow.mask = mainWindow.noMove
                 mainWindow.setMask = false
+            }
+        }
+    }
+
+    GlobalShortcut {
+        appid: "I-DeskPet"
+        name: "cycle-zIndex"
+        onPressed: {
+            let items = mainWindow.repeaterItems
+            if ( items.length < 2 ) return
+
+            // Find the hovered GIF
+            let hovered = null
+            for ( let i = 0; i < items.length; i++ ) {
+                if ( items[i].hovered ) {
+                    hovered = items[i]
+                    break
+                }
+            }
+            if ( !hovered ) return
+
+            let currentZ = hovered.zIndex
+            let maxZ = items.length - 1
+
+            if ( currentZ >= maxZ ) {
+                // Already on top, wrap to bottom: shift everyone else up by 1
+                for ( let i = 0; i < items.length; i++ ) {
+                    if ( items[i] !== hovered ) {
+                        items[i].zIndex += 1
+                    }
+                }
+                hovered.zIndex = 0
+            } else {
+                // Swap with the item directly above
+                for ( let i = 0; i < items.length; i++ ) {
+                    if ( items[i] !== hovered && items[i].zIndex === currentZ + 1 ) {
+                        items[i].zIndex = currentZ
+                        break
+                    }
+                }
+                hovered.zIndex = currentZ + 1
             }
         }
     }
