@@ -59,5 +59,5 @@ bind = $mainMod, Z, global, I-DeskPet:cycle-zIndex
 
 # Other keybinds
 
-Double click = Reset gif size to original
+Double click = Reset gif size to original `n
 Scroll = Scales the gif up and or down
