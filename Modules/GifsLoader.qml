@@ -38,7 +38,7 @@ Repeater {
 		Mouse {
 			id: mouse
 			onWheel: (wheel)=> {
-				gifSaved.scaling = Math.max( 1, ( gifSaved.scaling + 0.1 * ( wheel.angleDelta.y / 120 ) ) )
+				gifSaved.scaling = Math.max( ConfigLoader.maxScaling, ( gifSaved.scaling + 0.1 * ( wheel.angleDelta.y / 120 ) ) )
 			}
 			
 			onDoubleClicked: gifSaved.scaling = 1
