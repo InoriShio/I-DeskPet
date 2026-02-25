@@ -7,49 +7,50 @@ import Quickshell
 Singleton {
 	id: root
 
-	property alias gifFolder: adapter.gifFolder
-	property alias maxScaling: adapter.maxScaling
 	property string configDir: Quickshell.env("HOME") + "/.config/I-DeskPet"
 	property string configPath: configDir + "/config.json"
+	property alias gifFolder: adapter.gifFolder
+	property alias maxScaling: adapter.maxScale
 
 	Process {
 		id: dirCheck
-		running: true
-		command: [ "test", "-d", root.configDir ]
 
-		onExited: function( exitCode ) {
-			if ( exitCode !== 0 ) {
-				console.log( "creating dir" )
-				dirCreate.running = true
+		command: ["test", "-d", root.configDir]
+		running: true
+
+		onExited: function (exitCode) {
+			if (exitCode !== 0) {
+				console.log("creating dir");
+				dirCreate.running = true;
 			}
-        }
-    }
+		}
+	}
 
 	Process {
 		id: dirCreate
-		running: false
-		command: [ "mkdir", "-p", root.configDir ]
 
-		onExited: function(): void {
-			console.log( "Created config directory:", root.configDir )
+		command: ["mkdir", "-p", root.configDir]
+		running: false
+
+		onExited: function (): void {
+			console.log("Created config directory:", root.configDir);
 		}
 	}
 
 	FileView {
 		id: watcher
-		path: root.configPath
 
+		path: root.configPath
 		watchChanges: true
 
-		onFileChanged: reload()
-
 		onAdapterUpdated: writeAdapter()
+		onFileChanged: reload()
 
 		JsonAdapter {
 			id: adapter
 
-            property string gifFolder: Quickshell.shellDir + "/Gifs"
-			property real maxScaling: 1
+			property string gifFolder: Quickshell.shellDir + "/Gifs"
+			property real maxScale: 1
 		}
 	}
 }
