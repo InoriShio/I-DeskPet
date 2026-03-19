@@ -1,0 +1,379 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# =============================================================================
+# ideskpet - CLI tool for I-DeskPet Quickshell application
+# =============================================================================
+
+VERSION="1.0.0"
+REPO_URL="https://github.com/InoriShio/I-DeskPet"
+INSTALL_DIR="/etc/xdg/quickshell/I-DeskPet"
+LOG_DIR="$HOME/.local/state/ideskpet"
+LOG_FILE="$LOG_DIR/ideskpet.log"
+APP_ID="I-DeskPet"
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+BOLD='\033[1m'
+NC='\033[0m'
+
+# =============================================================================
+# Helper Functions
+# =============================================================================
+
+print_help() {
+    cat << EOF
+${BOLD}ideskpet${NC} - CLI tool for I-DeskPet desktop pet application (v${VERSION})
+
+${BOLD}USAGE:${NC}
+    ideskpet <COMMAND> [OPTIONS]
+
+${BOLD}COMMANDS:${NC}
+    ${GREEN}start${NC}              Start the I-DeskPet application
+    ${GREEN}stop${NC}               Stop the running I-DeskPet instance
+    ${GREEN}restart${NC}            Restart the I-DeskPet application
+    ${GREEN}log${NC}                Show application logs
+    ${GREEN}update${NC}             Update I-DeskPet from GitHub
+
+${BOLD}HYPRLAND SHORTCUTS:${NC}
+    ${BLUE}toggle-layer${NC}       Toggle pet between overlay/bottom layer
+    ${BLUE}toggle-region${NC}      Toggle click-through mode
+    ${BLUE}cycle-zindex${NC}       Cycle z-index of hovered gif
+
+${BOLD}LOG OPTIONS:${NC}
+    ideskpet log           Show last 50 lines of logs
+    ideskpet log -f        Follow logs in real-time (Ctrl+C to exit)
+    ideskpet log -n <N>    Show last N lines of logs
+
+${BOLD}OTHER:${NC}
+    -h, --help         Show this help message
+    -v, --version      Show version
+
+${BOLD}CONFIGURATION:${NC}
+    User config: ~/.config/I-DeskPet/config.json
+
+    Example config.json:
+    {
+      "gifFolder": "/home/user/Pictures/Pets",
+      "maxScaling": 1
+    }
+
+${BOLD}HYPRLAND KEYBIND EXAMPLES:${NC}
+    bind = CTRL, mouse:274, global, I-DeskPet:toggle-Region
+    bind = SHIFT, mouse:274, global, I-DeskPet:toggle-Layer
+    bind = \$mainMod, Z, global, I-DeskPet:cycle-zIndex
+
+${BOLD}INSTALLATION:${NC}
+    sudo cp ideskpet /usr/bin/ideskpet
+    sudo chmod +x /usr/bin/ideskpet
+
+EOF
+}
+
+print_version() {
+    echo "ideskpet v${VERSION}"
+}
+
+info() {
+    echo -e "${GREEN}[INFO]${NC} $1"
+}
+
+warn() {
+    echo -e "${YELLOW}[WARN]${NC} $1"
+}
+
+error() {
+    echo -e "${RED}[ERROR]${NC} $1" >&2
+}
+
+is_running() {
+    pgrep -f "quickshell.*${APP_ID}" > /dev/null 2>&1
+}
+
+get_pid() {
+    pgrep -f "quickshell.*${APP_ID}" 2>/dev/null || true
+}
+
+ensure_log_dir() {
+    if [[ ! -d "$LOG_DIR" ]]; then
+        mkdir -p "$LOG_DIR"
+    fi
+}
+
+ensure_installed() {
+    if [[ ! -d "$INSTALL_DIR" ]]; then
+        warn "I-DeskPet is not installed at ${INSTALL_DIR}"
+        info "Cloning from ${REPO_URL}..."
+        
+        # Check if /etc/xdg/quickshell exists
+        if [[ ! -d "/etc/xdg/quickshell" ]]; then
+            info "Creating /etc/xdg/quickshell directory (requires sudo)..."
+            sudo mkdir -p /etc/xdg/quickshell
+        fi
+        
+        info "Cloning repository (requires sudo)..."
+        sudo git clone "$REPO_URL" "$INSTALL_DIR"
+        
+        if [[ $? -eq 0 ]]; then
+            info "Successfully installed I-DeskPet to ${INSTALL_DIR}"
+        else
+            error "Failed to clone repository"
+            exit 1
+        fi
+    fi
+}
+
+check_dependencies() {
+    local missing=()
+    
+    if ! command -v quickshell &> /dev/null; then
+        missing+=("quickshell")
+    fi
+    
+    if ! command -v hyprctl &> /dev/null; then
+        missing+=("hyprctl (hyprland)")
+    fi
+    
+    if ! command -v git &> /dev/null; then
+        missing+=("git")
+    fi
+    
+    if [[ ${#missing[@]} -gt 0 ]]; then
+        error "Missing dependencies: ${missing[*]}"
+        echo "Please install the missing packages and try again."
+        exit 1
+    fi
+}
+
+# =============================================================================
+# Command Implementations
+# =============================================================================
+
+cmd_start() {
+    check_dependencies
+    ensure_installed
+    ensure_log_dir
+    
+    if is_running; then
+        warn "I-DeskPet is already running (PID: $(get_pid))"
+        echo "Use 'ideskpet restart' to restart, or 'ideskpet stop' to stop."
+        exit 1
+    fi
+    
+    info "Starting I-DeskPet..."
+    
+    # Start quickshell in background, redirect output to log file
+    nohup quickshell -p "$INSTALL_DIR" >> "$LOG_FILE" 2>&1 &
+    disown
+    
+    # Wait a moment and check if it started successfully
+    sleep 1
+    
+    if is_running; then
+        info "I-DeskPet started successfully (PID: $(get_pid))"
+        echo "Use 'ideskpet log -f' to view logs"
+    else
+        error "Failed to start I-DeskPet"
+        echo "Check logs with 'ideskpet log' for details"
+        exit 1
+    fi
+}
+
+cmd_stop() {
+    if ! is_running; then
+        warn "I-DeskPet is not running"
+        exit 0
+    fi
+    
+    local pid
+    pid=$(get_pid)
+    
+    info "Stopping I-DeskPet (PID: ${pid})..."
+    
+    # Try graceful shutdown first
+    kill "$pid" 2>/dev/null || true
+    
+    # Wait up to 5 seconds for graceful shutdown
+    local count=0
+    while is_running && [[ $count -lt 10 ]]; do
+        sleep 0.5
+        ((count++))
+    done
+    
+    # Force kill if still running
+    if is_running; then
+        warn "Graceful shutdown failed, force killing..."
+        kill -9 "$pid" 2>/dev/null || true
+        sleep 0.5
+    fi
+    
+    if is_running; then
+        error "Failed to stop I-DeskPet"
+        exit 1
+    else
+        info "I-DeskPet stopped successfully"
+    fi
+}
+
+cmd_restart() {
+    info "Restarting I-DeskPet..."
+    
+    if is_running; then
+        cmd_stop
+    fi
+    
+    sleep 0.5
+    cmd_start
+}
+
+cmd_log() {
+    ensure_log_dir
+    
+    if [[ ! -f "$LOG_FILE" ]]; then
+        warn "No log file found at ${LOG_FILE}"
+        echo "Start I-DeskPet first with 'ideskpet start'"
+        exit 1
+    fi
+    
+    local follow=false
+    local lines=50
+    
+    # Parse arguments
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            -f|--follow)
+                follow=true
+                shift
+                ;;
+            -n|--lines)
+                if [[ -n "${2:-}" ]] && [[ "$2" =~ ^[0-9]+$ ]]; then
+                    lines="$2"
+                    shift 2
+                else
+                    error "Option -n requires a numeric argument"
+                    exit 1
+                fi
+                ;;
+            *)
+                error "Unknown log option: $1"
+                echo "Usage: ideskpet log [-f] [-n <lines>]"
+                exit 1
+                ;;
+        esac
+    done
+    
+    if [[ "$follow" == true ]]; then
+        info "Following logs (Ctrl+C to exit)..."
+        echo "---"
+        tail -n "$lines" -f "$LOG_FILE"
+    else
+        tail -n "$lines" "$LOG_FILE"
+    fi
+}
+
+cmd_update() {
+    check_dependencies
+    
+    if [[ ! -d "$INSTALL_DIR" ]]; then
+        error "I-DeskPet is not installed at ${INSTALL_DIR}"
+        echo "Run 'ideskpet start' to install it first."
+        exit 1
+    fi
+    
+    info "Updating I-DeskPet from GitHub..."
+    
+    cd "$INSTALL_DIR"
+    
+    # Check for local changes
+    if ! sudo git diff --quiet 2>/dev/null; then
+        warn "Local changes detected. They may be overwritten."
+    fi
+    
+    sudo git pull
+    
+    if [[ $? -eq 0 ]]; then
+        info "Update completed successfully"
+        
+        if is_running; then
+            echo ""
+            warn "I-DeskPet is currently running."
+            echo "Run 'ideskpet restart' to apply changes."
+        fi
+    else
+        error "Update failed"
+        exit 1
+    fi
+}
+
+cmd_shortcut() {
+    local shortcut="$1"
+    
+    if ! command -v hyprctl &> /dev/null; then
+        error "hyprctl not found. Are you running Hyprland?"
+        exit 1
+    fi
+    
+    if ! is_running; then
+        warn "I-DeskPet is not running"
+        echo "Start it first with 'ideskpet start'"
+        exit 1
+    fi
+    
+    info "Triggering shortcut: ${APP_ID}:${shortcut}"
+    hyprctl dispatch global "${APP_ID}:${shortcut}"
+}
+
+# =============================================================================
+# Main Entry Point
+# =============================================================================
+
+main() {
+    local cmd="${1:-}"
+    
+    case "$cmd" in
+        start)
+            cmd_start
+            ;;
+        stop)
+            cmd_stop
+            ;;
+        restart)
+            cmd_restart
+            ;;
+        log)
+            shift
+            cmd_log "$@"
+            ;;
+        update)
+            cmd_update
+            ;;
+        toggle-layer)
+            cmd_shortcut "toggle-Layer"
+            ;;
+        toggle-region)
+            cmd_shortcut "toggle-Region"
+            ;;
+        cycle-zindex)
+            cmd_shortcut "cycle-zIndex"
+            ;;
+        -h|--help|help)
+            print_help
+            ;;
+        -v|--version|version)
+            print_version
+            ;;
+        "")
+            print_help
+            ;;
+        *)
+            error "Unknown command: ${cmd}"
+            echo "Run 'ideskpet --help' for usage information."
+            exit 1
+            ;;
+    esac
+}
+
+main "$@"
