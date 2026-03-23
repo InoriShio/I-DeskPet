@@ -1,0 +1,18 @@
+[package]
+name = "ideskpet-installer"
+version = "1.0.0"
+edition = "2021"
+description = "Installer and CLI for I-DeskPet desktop pet application"
+authors = ["InoriShio"]
+license = "MIT"
+
+[[bin]]
+name = "ideskpet-installer"
+path = "src/main.rs"
+
+[[bin]]
+name = "ideskpet"
+path = "src/bin/ideskpet.rs"
+
+[target.'cfg(unix)'.dependencies]
+libc = "0.2"
